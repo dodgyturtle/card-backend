@@ -1,0 +1,2 @@
+#curl -i -X POST "http://127.0.0.1:5000/v1/user" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"accountid\": \"123456\",  \"name\": \"Name1\",  \"surnam
+curl -i -X POST "http://127.0.0.1:5000/update" -H  "accept: application/json" -H  "Content-Type: application/x-www-form-urlencoded" -d "cardname=CardName1"
