@@ -1,2 +1,2 @@
-#curl -i -X POST "http://127.0.0.1:5000/v1/user" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"accountid\": \"123456\",  \"name\": \"Name1\",  \"surnam
-curl -i -X POST "http://127.0.0.1:5000/update" -H  "accept: application/json" -H  "Content-Type: application/x-www-form-urlencoded" -d "cardname=CardName1"
+curl -i -X POST "http://127.0.0.1:5000/v1/cardupdate/5f2d84ced112c8d4f29d41b4" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"cardname\": \"CardName1\", \"business\": \"Sales\", \"cardnumber\": \"123456789\", \"barcode\": \"987654321\", \"cardcategory\": \"Sales\"}"
+#curl -i -X POST "http://127.0.0.1:5000/update" -H  "accept: application/json" -H  "Content-Type: application/x-www-form-urlencoded" -d "cardname=CardName1"
