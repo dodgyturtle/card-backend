@@ -1,0 +1,1 @@
+curl -i -X GET "http://127.0.0.1:5000/v1/card/123456" -H  "Content-Type: application/json" 

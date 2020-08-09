@@ -1,7 +1,8 @@
 from api_app import db
 
 
-class Card(db.Document):
+class Users_Cards(db.Document):
+    accountid = db.StringField(required=True, unique=False)
     cardname = db.StringField(required=True, unique=False)
     business = db.StringField()
     cardnumber = db.StringField(required=True, unique=False)

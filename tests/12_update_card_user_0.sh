@@ -1,0 +1,1 @@
+curl -i -X PUT "http://127.0.0.1:5000/v1/card/5f3023e498c083ce2f66b8fb" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"cardname\": \"CardName1Update\",  \"business\": \"ProgUpdate\",  \"cardnumber\": \"123456789\",  \"barcode\": \"987654321\",  \"cardcategory\": \"Sales\"}"

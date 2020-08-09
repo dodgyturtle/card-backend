@@ -1,0 +1,1 @@
+curl -i -X POST "http://127.0.0.1:5000/v1/user/789012" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"accountid\": \"789012\",  \"name\": \"Name2Update\",  \"surname\": \"Surname2Update\",  \"birthdate\": \"02.01.2020\",  \"gender\": \"Male\",  \"email\": \"name2@example.com\"}"
