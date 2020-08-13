@@ -1,11 +1,16 @@
 import json
 
-from flask import Response, request
-from flask import current_app as app
 from bson.objectid import ObjectId
+from flask import Response
+from flask import current_app as app
+from flask import jsonify, make_response, request
+from flask_jwt_extended import (create_access_token, create_refresh_token,
+                                get_jwt_identity, jwt_refresh_token_required,
+                                jwt_required)
+from werkzeug.security import check_password_hash, generate_password_hash
 
+from api_app import flask_bcrypt
 from api_app.database.model import User, Users_Cards
-
 
 
 # list users
@@ -19,10 +24,17 @@ def list_users():
 @app.route('/v1/user', methods=['POST'])
 def add_user():
     user_data = request.get_json()
+    if User.objects.filter(accountid=user_data.get('accountid')):
+        return jsonify({'message': f'User {user_data.get("accountid")} alredy exist!'}), 403
     user_info = User(**user_data)
+    if user_info.password:
+        user_info.password = flask_bcrypt.generate_password_hash(user_info.password)
+        access_token = create_access_token(identity=user_info.accountid)
+        user_info.save()
+        return jsonify({'token': access_token}), 200
     user_info.save()
     api_info = user_info.to_json()
-    return Response(api_info, mimetype='application/json', status=200)
+    return jsonify({'massage': f'Unauthorized user {user_data.get("accountid")} created!'}), 200
 
 # update user
 @app.route('/v1/user/<accountid>', methods=['PUT'])
@@ -44,6 +56,7 @@ def delete_user(accountid: str):
 
 # list card
 @app.route('/v1/card/<accountid>', methods=['GET'])
+@jwt_required
 def list_cards(accountid: str):
     api_info = Users_Cards.objects(accountid=str(accountid)).to_json()
     return Response(api_info, mimetype='application/json', status=200)

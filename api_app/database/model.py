@@ -12,9 +12,10 @@ class Users_Cards(db.Document):
 
 class User(db.Document):
     accountid = db.StringField(required=True, unique=True)
-    name = db.StringField(required=True)
+    name = db.StringField()
     surname = db.StringField()
     birthdate = db.StringField()
     gender = db.StringField()
-    email = db.StringField(required=True)
+    email = db.StringField()
+    password = db.BinaryField()
     mycards = db.ListField()

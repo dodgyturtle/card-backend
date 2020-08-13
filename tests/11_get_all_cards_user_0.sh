@@ -1,1 +1,2 @@
-curl -i -X GET "http://127.0.0.1:5000/v1/card/123456" -H  "Content-Type: application/json" 
+curl -i -X GET "http://127.0.0.1:5000/v1/card/123456"  -H  "Content-Type: application/json"  -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTczNDExMjUsIm5iZiI6MTU5NzM0MTEyNSwianRpIjoiMDdhMzA2YzYtNmZkYi00NmZkLTk1ZjYtOGQ2ZjY2NzExODAzIiwiZXhwIjoxNTk3MzQyMDI1LCJpZGVudGl0eSI6IjEyMzQ1NiIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.chKKBT9mmZdIuZVNXQw2eaVZ6WffC0jkNZ6cw43OiXs"
+#curl -i -X GET "http://127.0.0.1:5000/v1/card/123456" -H  "Content-Type: application/json" 
