@@ -1,11 +1,11 @@
 import json
 
-from flask import Response
+from flask import Response, request
 from flask import current_app as app
-from flask import request
 from bson.objectid import ObjectId
 
 from api_app.database.model import User, Users_Cards
+
 
 
 # list users
@@ -23,7 +23,6 @@ def add_user():
     user_info.save()
     api_info = user_info.to_json()
     return Response(api_info, mimetype='application/json', status=200)
-
 
 # update user
 @app.route('/v1/user/<accountid>', methods=['PUT'])
