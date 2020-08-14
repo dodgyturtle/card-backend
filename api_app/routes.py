@@ -15,9 +15,10 @@ from api_app.database.model import User, Users_Cards
 
 # list users
 @app.route('/v1/user', methods=['GET'])
+@jwt_required
 def list_users():
     api_info = User.objects.to_json()
-    return Response(api_info, mimetype='application/json', status=200)
+    return jsonify({"data": api_info}), 200
 
 
 # add user
@@ -27,31 +28,42 @@ def add_user():
     if User.objects.filter(accountid=user_data.get('accountid')):
         return jsonify({'message': f'User {user_data.get("accountid")} alredy exist!'}), 403
     user_info = User(**user_data)
-    if user_info.password:
+    if user_info.password and user_info.email:
         user_info.password = flask_bcrypt.generate_password_hash(user_info.password)
-        access_token = create_access_token(identity=user_info.accountid)
-        user_info.save()
-        return jsonify({'token': access_token}), 200
+    access_token = create_access_token(identity=user_info.accountid, expires_delta=False)
     user_info.save()
-    api_info = user_info.to_json()
-    return jsonify({'massage': f'Unauthorized user {user_data.get("accountid")} created!'}), 200
+    return jsonify({'token': access_token}), 200
+    
 
 # update user
 @app.route('/v1/user/<accountid>', methods=['PUT'])
+@jwt_required
 def update_user(accountid: str):
     user_new_data = request.get_json()
     User.objects.get(accountid=str(accountid)).update(**user_new_data)
     api_info = User.objects.get(accountid=str(accountid)).to_json()
-    return Response(api_info, mimetype='application/json', status=200)
+    return jsonify({'data': api_info}), 200
+
+#resend token
+@app.route('/v1/token', methods=['GET'])
+def resend_token_user():
+    user_data = request.get_json()
+    user_info = User.objects.get(accountid=user_data.get("accountid"))
+    if (user_data["email"] == user_info.email) and (
+            flask_bcrypt.check_password_hash(user_info.password, user_data['password'])):
+        access_token = create_access_token(identity=user_info.accountid, expires_delta=False)
+        return jsonify({'token': access_token}), 200
+    return jsonify({'message': 'invalid username or password'}), 401
 
 
 # delete user
 @app.route('/v1/user/<accountid>', methods=['DELETE'])
+@jwt_required
 def delete_user(accountid: str):
     user_info = User.objects.get(accountid=str(accountid))
     [Users_Cards.objects.get(id=user_card).delete() for user_card in user_info.mycards]
     user_info.delete()
-    return Response('Ok', mimetype='application/json', status=200)
+    return jsonify({'message': f'User {accountid} deleted!'}), 200
 
 
 # list card
@@ -59,11 +71,12 @@ def delete_user(accountid: str):
 @jwt_required
 def list_cards(accountid: str):
     api_info = Users_Cards.objects(accountid=str(accountid)).to_json()
-    return Response(api_info, mimetype='application/json', status=200)
+    return jsonify({'data': api_info}), 200
 
 
 # add card
 @app.route('/v1/card/<accountid>', methods=['POST'])
+@jwt_required
 def add_card(accountid: str):
     card_data = request.get_json()
     user_info = User.objects.get(accountid=str(accountid))
@@ -73,22 +86,24 @@ def add_card(accountid: str):
     user_info.mycards.append(card_info.id)
     user_info.save()
     api_info = card_info.to_json()
-    return Response(api_info, mimetype='application/json', status=200)
+    return jsonify({'data': api_info}), 200
 
 
 # update card
 @app.route('/v1/card/<cardid>', methods=['PUT'])
+@jwt_required
 def card_update(cardid: str):
     new_card_info = request.get_json()
     Users_Cards.objects.get(id=str(cardid)).update(**new_card_info)
     api_info = Users_Cards.objects.get(id=str(cardid)).to_json()
-    return Response(api_info, mimetype='application/json', status=200)
+    return jsonify({'data': api_info}), 200
 
 
 # delete card
 @app.route('/v1/card/<cardid>', methods=['DELETE'])
+@jwt_required
 def delete_card(cardid: str):
     card_info = Users_Cards.objects.get(id=str(cardid))
     User.objects(accountid = card_info.accountid).update(pull__mycards=ObjectId(str(cardid)))
     card_info.delete()
-    return Response('Ok', mimetype='application/json', status=200)
+    return jsonify({'message': f'Card {cardid} deleted!'}), 200

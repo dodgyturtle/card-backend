@@ -1,0 +1,2 @@
+#curl -i -X GET "http://127.0.0.1:5000/v1/token" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"accountid\": \"123456\",  \"name\": \"Name1\",  \"surname\": \"Surname2\",  \"birthdate\": \"01.01.2020\",  \"gender\": \"Male\",  \"email\": \"name@example.com\", \"password\": \"Qwerty\"}"
+curl -i -X GET "http://127.0.0.1:5000/v1/token" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{  \"accountid\": \"123456\", \"email\": \"name@example.com\", \"password\": \"Qwerty\"}"
