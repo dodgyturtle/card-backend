@@ -15,11 +15,9 @@ from api_app.database.model import User, Users_Cards
 
 
 # info user
-@app.route('/v1/user', methods=['GET'])
+@app.route('/v1/user/<accountid>', methods=['GET'])
 @jwt_required
-def info_user():
-    user_info_from_request = request.get_json()
-    accountid = user_info_from_request.get('accountid')
+def info_user(accountid: str):
     user_info = get_user_info(accountid)
     if not user_info:
         return jsonify({'message': f'User {accountid} is not exist!'}), 403
@@ -56,26 +54,26 @@ def update_user():
     return jsonify({'data': api_info}), 200
 
 #resend token
-@app.route('/v1/token', methods=['GET'])
-def resend_token_user():
-    user_info_from_request = request.get_json()
-    user_info = get_user_info(user_info_from_request.get("accountid"))
+@app.route('/v1/token/<accountid>', methods=['GET'])
+def resend_token_user(accountid: str):
+    authorization_info = request.authorization
+    user_info = get_user_info(accountid)
     if not user_info:
-        return jsonify({'message': f'User {user_info_from_request.get("accountid")} is not exist!'}), 403 
-    if (user_info_from_request["email"] == user_info.email) and (
+        return jsonify({'message': f'User {accountid} is not exist!'}), 403 
+    if (authorization_info.username == user_info.email) and (
             flask_bcrypt.check_password_hash(
-                user_info.password, user_info_from_request['password'])):
+                user_info.password, authorization_info.password)):
         access_token = create_access_token(identity=user_info.accountid, expires_delta=False)
         return jsonify({'token': access_token}), 200
-    return jsonify({'message': 'invalid username or password'}), 401
+    return jsonify({'message': 'Invalid username or password'}), 401
+    
+
 
 
 # delete user
-@app.route('/v1/user/', methods=['DELETE'])
+@app.route('/v1/user/<accountid>', methods=['DELETE'])
 @jwt_required
-def delete_user():
-    user_info_from_request = request.get_json()
-    accountid = user_info_from_request.get('accountid')
+def delete_user(accountid: str):
     user_info = get_user_info(accountid)
     if not user_info:
         return jsonify({'message': f'User {accountid} is not exist!'}), 403
@@ -85,11 +83,9 @@ def delete_user():
 
 
 # list card
-@app.route('/v1/card', methods=['GET'])
+@app.route('/v1/card/<accountid>', methods=['GET'])
 @jwt_required
-def list_cards():
-    user_info_from_request = request.get_json()
-    accountid = user_info_from_request.get('accountid')
+def list_cards(accountid: str):
     if not get_user_info(accountid):
         return jsonify({'message': f'User {accountid} is not exist!'}), 403
     api_info = Users_Cards.objects(accountid=accountid).to_json()
@@ -129,11 +125,9 @@ def card_update():
 
 
 # delete card
-@app.route('/v1/card', methods=['DELETE'])
+@app.route('/v1/card/<cardid>', methods=['DELETE'])
 @jwt_required
-def delete_card():
-    card_info_from_request = request.get_json()
-    cardid = card_info_from_request.get('id')
+def delete_card(cardid: str):
     card_info = get_card_info(cardid)
     if not card_info:
         return jsonify({'message': f'Card {cardid} is not exist!'}), 403
