@@ -10,8 +10,9 @@ from flask_jwt_extended import (create_access_token, create_refresh_token,
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from api_app import flask_bcrypt
-from api_app.database.database import get_card_info, get_user_info
+from api_app.database.database import get_card_info, get_user_info, password_check
 from api_app.database.model import User, Users_Cards
+from api_app.return_handlers import response_processing
 
 
 # info user
@@ -30,14 +31,20 @@ def info_user(accountid: str):
 @app.route('/v1/user', methods=['POST'])
 def add_user():
     user_info_from_request = request.get_json()
-    if get_user_info(user_info_from_request.get('accountid')):
-        return jsonify({'message': f'User {user_info_from_request.get("accountid")} alredy exist!'}), 403
+    user_accountid = user_info_from_request.get('accountid')
+    if get_user_info(user_accountid):
+        return jsonify({'message': f'User {user_accountid} alredy exist!'}), 403
     user_info = User(**user_info_from_request)
     if user_info.password and user_info.email:
         user_info.password = flask_bcrypt.generate_password_hash(user_info.password)
     access_token = create_access_token(identity=user_info.accountid, expires_delta=False)
     user_info.save()
-    return jsonify({'token': access_token}), 200
+    if password_check(user_accountid):
+        answer_code = '02'
+    else:
+        answer_code = '01'
+    api_reply = response_processing(answer_code, {'token': access_token})
+    return jsonify(api_reply), 200
 
 
 # update user
