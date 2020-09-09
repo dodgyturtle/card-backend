@@ -11,7 +11,6 @@ def password_check(accountid: str):
         return True
     return False
 
-
 def get_card_info(cardid: str):
     if not ObjectId.is_valid(cardid):
         return None
