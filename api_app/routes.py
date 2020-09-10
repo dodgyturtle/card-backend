@@ -113,7 +113,7 @@ def delete_user(accountid: str):
         answer_code_http = 403
         return jsonify(api_reply), answer_code_http
     [Users_Cards.objects.get(id=user_card).delete() for user_card in user_info.mycards]
-    #user_info.delete()
+    user_info.delete()
     if get_user_info(accountid):
         answer_code = '09'
         answer_code_http = 403
