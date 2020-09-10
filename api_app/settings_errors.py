@@ -6,7 +6,7 @@ DECODING_CODES = {
     '04' : 'User is alredy exist',
     '05' : 'User updated',
     '06' : 'User didn\'t update',
-    '07' : 'Invalid username or password',
+    '07' : 'Empty or invalid username/password',
     '08' : 'User deleted',
     '09' : 'User didn\'t delete',
     '10' : '',
@@ -18,6 +18,6 @@ DECODING_CODES = {
     '16' : 'Card didn\'t update',
     '17' : '',
     '18' : 'Card deleted',
-    '19' : ' Card didn\'t delete',
+    '19' : 'Card didn\'t delete',
 }
 TEXT_IF_NO_CODE = 'No error message'
